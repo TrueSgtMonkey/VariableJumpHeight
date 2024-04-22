@@ -2,10 +2,12 @@ extends CharacterBody3D
 
 const MOUSE_SPEED: float = 0.007
 const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
+const JUMP_VELOCITY = 6.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+var cut_jump_height: float = 0.5
 
 var pivot: Node3D = null
 var camera: Camera3D = null
@@ -35,6 +37,11 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+	
+func _input(event):
+	if event.is_action_released("jump"):
+		if velocity.y > 0.0:
+			velocity.y *= cut_jump_height
 	
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
