@@ -8,15 +8,18 @@ enum Ani {
 }
 var ani_state: int = Ani.IDLE
 var ani_time: float = 0.0
+const ANI_PERIOD: float = 1.0 / 24.0
 
 const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
-const ANI_PERIOD: float = 1.0 / 24.0
+const MAX_JUMP_VELOCITY = -1250.0
+const MIN_JUMP_VELOCITY = -300.0
+const JUMP_FORCE_INCREMENT = 1000.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var original_col_position: Vector2 = Vector2.ZERO
+var current_jump_velocity: float = MIN_JUMP_VELOCITY
 
 var collision_shape: CollisionShape2D = null
 var sprite: Sprite2D = null
@@ -38,9 +41,9 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Handle jump.
+	# Where we apply jump velocity change
 	if Input.is_action_pressed("jump") and is_on_floor():
-		# velocity.y = JUMP_VELOCITY
+		current_jump_velocity = move_toward(current_jump_velocity, MAX_JUMP_VELOCITY, delta * JUMP_FORCE_INCREMENT)
 		ani_state = Ani.JUMP_HOLDING
 
 	# Get the input direction and handle the movement/deceleration.
@@ -52,11 +55,15 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 
 	move_and_slide()
-	
+
 func _input(event):
+	# where we release the jump
 	if event.is_action_released("jump"):
 		ani_state = Ani.JUMP_RELEASE
+		velocity.y = current_jump_velocity
+		current_jump_velocity = MIN_JUMP_VELOCITY
 
+# animate our character -- has nothing to do with physics
 func change_frame():
 	var frame = sprite.frame
 	match ani_state:
@@ -78,6 +85,7 @@ func change_frame():
 	change_collision_shape_per_frame(frame)
 	sprite.frame = frame
 
+# fit the collisions to the animations
 func change_collision_shape_per_frame(frame: int):
 	if frame < Ani.JUMP_HOLDING or frame > (Ani.MAX_ANI-1):
 		collision_shape.transform.origin.y = original_col_position.y + 9.0
