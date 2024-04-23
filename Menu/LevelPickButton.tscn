@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bevmvbusr86m1"]
+
+[ext_resource type="Script" path="res://Menu/LevelPickButton.gd" id="1_6uqp7"]
+
+[node name="LevelPickButton" type="Button"]
+text = "2D Level"
+script = ExtResource("1_6uqp7")
