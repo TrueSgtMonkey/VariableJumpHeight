@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://2ymdrhqv0tvv"]
+
+[ext_resource type="Script" path="res://ScenePicker.gd" id="1_ry3s3"]
+[ext_resource type="PackedScene" uid="uid://bevmvbusr86m1" path="res://Menu/LevelPickButton.tscn" id="2_vibuq"]
+
+[node name="ScenePicker" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ry3s3")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GridContainer" type="GridContainer" parent="CenterContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="LevelPickButton2D" parent="CenterContainer/GridContainer" instance=ExtResource("2_vibuq")]
+layout_mode = 2
+path = "res://2D/level2d.tscn"
+
+[node name="LevelPickButton3D" parent="CenterContainer/GridContainer" instance=ExtResource("2_vibuq")]
+layout_mode = 2
+text = "3D Level"
+path = "res://3D/level.tscn"
